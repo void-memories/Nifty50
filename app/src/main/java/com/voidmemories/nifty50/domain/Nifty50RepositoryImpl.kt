@@ -8,9 +8,7 @@ import javax.inject.Inject
 
 class Nifty50RepositoryImpl @Inject constructor(private val nifty50Api: Nifty50Api) :
     Nifty50Repository {
-
     override suspend fun getNifty50Details(): Resource<List<StockModel>> {
-
         return try {
             val res = nifty50Api.getNifty50Details()
 

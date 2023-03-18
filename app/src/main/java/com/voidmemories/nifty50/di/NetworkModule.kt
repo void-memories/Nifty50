@@ -10,7 +10,6 @@ import javax.inject.Singleton
 
 @Module
 internal class NetworkModule {
-
     @Provides
     @Singleton
     fun providesRetrofit(): Retrofit {

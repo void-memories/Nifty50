@@ -15,13 +15,13 @@ import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
     private lateinit var viewModel: MainViewModel
 
     @Mock
     private lateinit var repository: Nifty50RepositoryImpl
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private val testDispatcher = StandardTestDispatcher()
     private val mStockObject = StockModel(
         symbol = "IBM",
@@ -34,7 +34,6 @@ class MainViewModelTest {
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
@@ -42,13 +41,11 @@ class MainViewModelTest {
         Dispatchers.setMain(testDispatcher)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
         Dispatchers.resetMain()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `should add a new data on success status`() = runTest {
         Mockito.`when`(repository.getNifty50Details())
@@ -60,7 +57,6 @@ class MainViewModelTest {
         Assert.assertEquals(listOf(mStockObject), viewModel.nifty50LiveData.value)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `should emit a null on failure status`() = runTest {
         Mockito.`when`(repository.getNifty50Details())

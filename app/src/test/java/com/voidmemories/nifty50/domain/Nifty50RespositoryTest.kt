@@ -16,6 +16,7 @@ import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class Nifty50RespositoryTest {
     private lateinit var repository: Nifty50Repository
 
@@ -35,7 +36,6 @@ class Nifty50RespositoryTest {
         repository = Nifty50RepositoryImpl(mockNifty50Api)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `should return response object with success status`() = runTest {
         Mockito.`when`(mockNifty50Api.getNifty50Details())
@@ -44,7 +44,6 @@ class Nifty50RespositoryTest {
         assertEquals(Resource.success(listOf(mStockObject)), res)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `should return response object with error status`() = runTest {
         Mockito.`when`(mockNifty50Api.getNifty50Details()).thenReturn(

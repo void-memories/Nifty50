@@ -36,7 +36,6 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var mainViewModelFactory: MainViewModelFactory
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

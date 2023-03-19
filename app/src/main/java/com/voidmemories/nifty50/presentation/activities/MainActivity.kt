@@ -24,6 +24,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import com.voidmemories.nifty50.Nifty50Application
+import com.voidmemories.nifty50.core.AppState
 import com.voidmemories.nifty50.presentation.components.ComposableCard
 import com.voidmemories.nifty50.presentation.theme.Nifty50Theme
 import com.voidmemories.nifty50.presentation.viewmodels.MainViewModel
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
 
         mainViewModel = ViewModelProvider(this, mainViewModelFactory)[MainViewModel::class.java]
 
-        mainViewModel.runnableCode.run()
+        mainViewModel.periodicFetcher.run()
 
         setContent {
             Nifty50Theme {
@@ -60,10 +61,11 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainView(mainViewModel: MainViewModel) {
-    val nifty50Objects by mainViewModel.nifty50LiveData.observeAsState(listOf())
+    val viewState by mainViewModel.nifty50LiveData.observeAsState(AppState.Loading())
     val mContext = LocalContext.current
+    val nonStockId = "NIFTY 50"
 
-    LaunchedEffect(nifty50Objects) {
+    LaunchedEffect(viewState) {
         Toast.makeText(mContext, "Data Updated!", Toast.LENGTH_SHORT).show()
     }
 
@@ -81,18 +83,18 @@ fun MainView(mainViewModel: MainViewModel) {
             textAlign = TextAlign.Center,
         )
 
-        if (nifty50Objects == null) {
-            Text(
-                "We're having problems fetching data.", style = MaterialTheme.typography.body2,
+        when (viewState) {
+            is AppState.Loading -> Text(
+                (viewState as AppState.Loading).message!!, style = MaterialTheme.typography.body2,
             )
-        } else if (nifty50Objects!!.isEmpty()) {
-            Text(
-                "Firing APIs, please wait...", style = MaterialTheme.typography.body2,
+
+            is AppState.Error -> Text(
+                (viewState as AppState.Error).message!!, style = MaterialTheme.typography.body2,
             )
-        } else {
-            LazyColumn {
-                items(nifty50Objects!!) { item ->
-                    if (item.identifier != "NIFTY 50") {
+
+            else -> LazyColumn {
+                items((viewState as AppState.Success).data) { item ->
+                    if (item.identifier != nonStockId) {
                         ComposableCard(stockObject = item)
                     }
                 }

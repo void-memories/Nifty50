@@ -1,6 +1,6 @@
 package com.voidmemories.nifty50.domain
 
-import com.voidmemories.nifty50.core.Resource
+import com.voidmemories.nifty50.core.AppState
 import com.voidmemories.nifty50.data.datasources.api.Nifty50Api
 import com.voidmemories.nifty50.data.models.StockModel
 import junit.framework.Assert.assertEquals
@@ -12,7 +12,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mock
-import org.mockito.Mockito
+import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import retrofit2.Response
 
@@ -37,23 +37,25 @@ class Nifty50RespositoryTest {
     }
 
     @Test
-    fun `should return response object with success status`() = runTest {
-        Mockito.`when`(mockNifty50Api.getNifty50Details())
+    fun `should return success state`() = runTest {
+        `when`(mockNifty50Api.getNifty50Details())
             .thenReturn(Response.success(listOf(mStockObject)))
+
         val res = repository.getNifty50Details()
-        assertEquals(Resource.success(listOf(mStockObject)), res)
+        assertEquals(listOf(mStockObject), (res as AppState.Success).data)
     }
 
     @Test
-    fun `should return response object with error status`() = runTest {
-        Mockito.`when`(mockNifty50Api.getNifty50Details()).thenReturn(
+    fun `should return error state`() = runTest {
+        `when`(mockNifty50Api.getNifty50Details()).thenReturn(
             Response.error(
                 404,
                 "{}"
                     .toResponseBody("application/json".toMediaTypeOrNull())
             )
         )
+
         val res = repository.getNifty50Details()
-        Assert.assertEquals(Resource.error("Network Failure", null), res)
+        Assert.assertTrue(res is AppState.Error)
     }
 }

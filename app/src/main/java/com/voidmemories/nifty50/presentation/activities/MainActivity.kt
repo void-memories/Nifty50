@@ -83,17 +83,17 @@ fun MainView(mainViewModel: MainViewModel) {
             textAlign = TextAlign.Center,
         )
 
-        when (viewState) {
+        when (val intermediateVar = viewState) {
             is AppState.Loading -> Text(
-                (viewState as AppState.Loading).message!!, style = MaterialTheme.typography.body2,
+                intermediateVar.message!!, style = MaterialTheme.typography.body2,
             )
 
             is AppState.Error -> Text(
-                (viewState as AppState.Error).message!!, style = MaterialTheme.typography.body2,
+                intermediateVar.message!!, style = MaterialTheme.typography.body2,
             )
 
-            else -> LazyColumn {
-                items((viewState as AppState.Success).data) { item ->
+            is AppState.Success -> LazyColumn {
+                items(intermediateVar.data) { item ->
                     if (item.identifier != nonStockId) {
                         ComposableCard(stockObject = item)
                     }

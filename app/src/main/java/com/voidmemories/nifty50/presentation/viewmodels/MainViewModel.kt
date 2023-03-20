@@ -27,6 +27,8 @@ class MainViewModel(private val repository: Nifty50Repository) : ViewModel() {
         }
     }
 
+    fun stopDataFetch() = updateHandler.removeCallbacks(periodicFetcher)
+
     @VisibleForTesting
     fun setNifty50LiveData(appState: AppState<List<StockModel>>) {
         _nifty50LiveData.postValue(appState)

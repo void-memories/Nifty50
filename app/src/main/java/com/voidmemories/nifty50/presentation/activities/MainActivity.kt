@@ -57,6 +57,11 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainViewModel.stopDataFetch()
+    }
 }
 
 @Composable
